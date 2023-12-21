@@ -25,6 +25,7 @@ public class InfosController {
                 new Infos(3, "John", "Smith", "01/01/2000"),
                 new Infos(4, "Jane", "Smith", "01/01/2000")
         );
+        System.out.println("Eh oh !");
         return infos.get(id - 1);
     }
 }
