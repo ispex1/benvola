@@ -9,7 +9,7 @@
 		<relativePath/> <!-- lookup parent from repository -->
 	</parent>
 	<groupId>fr.insa</groupId>
-	<artifactId>ConfigService</artifactId>
+	<artifactId>ServerConfig</artifactId>
 	<version>0.0.1-SNAPSHOT</version>
 	<name>ConfigService</name>
 	<description>A service for the configuration of the project</description>

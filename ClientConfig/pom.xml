@@ -9,10 +9,10 @@
 		<relativePath/> <!-- lookup parent from repository -->
 	</parent>
 	<groupId>fr.insa</groupId>
-	<artifactId>ListService</artifactId>
+	<artifactId>ClientConfig</artifactId>
 	<version>0.0.1-SNAPSHOT</version>
-	<name>ListService</name>
-	<description>la liste des users ok </description>
+	<name>ClientConfig</name>
+	<description>The client of the config because the other is the Server</description>
 	<properties>
 		<java.version>17</java.version>
 		<spring-cloud.version>2023.0.0</spring-cloud.version>
