@@ -1,25 +1,18 @@
-package model;
+package fr.insa.ListService.model;
 
 public class User {
-
-    enum Role {
-        Helper,
-        Requester,
-        Validator,
-        Admin
-    }
 
     private int id;
     private String firstname;
     private String lastname;
-    private Role role;
-    // private Float score;
 
-    public User(int id, String firstname, String lastname, Role role) {
+    private Float score;
+
+    public User(int id, String firstname, String lastname, Float score) {
         this.id = id;
         this.firstname = firstname;
         this.lastname = lastname;
-        this.role = role;
+        this.score = score;
     }
 
     public int getId() {
@@ -31,8 +24,9 @@ public class User {
     public String getLastname() {
         return this.lastname;
     }
-    public Role getRole() {
-        return this.role;
+
+    public Float getScore() {
+        return this.score;
     }
 
     public void setId(int id) {
@@ -44,7 +38,8 @@ public class User {
     public void setLastname(String lastname) {
         this.lastname = lastname;
     }
-    public void setRole(Role role) {
-        this.role = role;
+    public void setScore(Float score) {
+        this.score = score;
     }
+
 }

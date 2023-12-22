@@ -2,7 +2,7 @@ package fr.insa.ListService.model;
 
 public class Eval {
     private int id;
-    private float note;
+    private static float note;
 
     public Eval(int id, float note) {
         this.id = id;
@@ -12,8 +12,8 @@ public class Eval {
     public int getId() {
         return this.id;
     }
-    public float getNote() {
-        return this.note;
+    public static float getNote() {
+        return note;
     }
 
     public void setId(int id) {
