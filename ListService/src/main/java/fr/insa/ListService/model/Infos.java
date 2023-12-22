@@ -2,9 +2,9 @@ package fr.insa.ListService.model;
 
 public class Infos {
     private int id;
-    private String firstname;
-    private String lastname;
-    private String birthdate;
+    private static String firstname;
+    private static String lastname;
+    private static String birthdate;
 
     public Infos(int id, String firstname, String lastname, String birthdate) {
         this.id = id;
@@ -16,14 +16,14 @@ public class Infos {
     public int getId() {
         return this.id;
     }
-    public String getFirstname() {
-        return this.firstname;
+    public static String getFirstname() {
+        return firstname;
     }
-    public String getLastname() {
-        return this.lastname;
+    public static String getLastname() {
+        return lastname;
     }
-    public String getBirthdate() {
-        return this.birthdate;
+    public static String getBirthdate() {
+        return birthdate;
     }
 
     public void setId(int id) {
