@@ -11,7 +11,7 @@ public class ListServiceApplication {
 
 	@Bean
 	@LoadBalanced
-	public RestTemplate listService() {
+	public RestTemplate restTemplate() {
 		return new RestTemplate();
 	}
 

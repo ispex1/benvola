@@ -26,7 +26,6 @@ public class ListController {
         users.add(2);
         users.add(3);
 
-        RestTemplate restTemplate = new RestTemplate();
         int i = 1;
         List<User> listUsers = new ArrayList<User>();
 
