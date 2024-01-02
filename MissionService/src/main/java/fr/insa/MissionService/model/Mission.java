@@ -2,38 +2,38 @@ package fr.insa.MissionService.model;
 
 public class Mission {
 
-    private enum TypeMission {
-        REQUEST,
-        OFFER
-    }
-    private enum StateMission {
+    public enum StateMission {
         WAITING,
         WAITING_FOR_VALIDATION,
         IN_PROGRESS,
         DONE
     }
     private int id;
-    private TypeMission type;
     private StateMission state;
     private String title;
     private String description;
-    private int idUser;
+    private int helper;
+    private int requester;
+    private int validator;
 
-    public Mission(int id, TypeMission type, StateMission state, String title, String description, int idUser) {
-        this.id = id;
-        this.type = type;
+    public Mission(StateMission state, String title, String description, int helper) {
         this.state = state;
         this.title = title;
         this.description = description;
-        this.idUser = idUser;
+        this.helper = helper;
     }
+
+    public Mission(StateMission state, String title, String description, int requester, int validator) {
+        this.state = state;
+        this.title = title;
+        this.description = description;
+        this.requester = requester;
+        this.validator = validator;
+    }
+
 
     public int getId() {
         return id;
-    }
-
-    public TypeMission getType() {
-        return type;
     }
 
     public StateMission getState() {
@@ -48,12 +48,24 @@ public class Mission {
         return description;
     }
 
-    public int getIdUser() {
-        return idUser;
+    public int getHelper() {
+        return helper;
+    }
+
+    public int getRequester() {
+        return requester;
+    }
+
+    public int getValidator() {
+        return validator;
     }
 
     public void setId(int id) {
         this.id = id;
+    }
+
+    public void setState(StateMission state) {
+        this.state = state;
     }
 
     public void setTitle(String title) {
@@ -64,12 +76,15 @@ public class Mission {
         this.description = description;
     }
 
-    public void setType(TypeMission type) {
-        this.type = type;
+    public void setHelper(int helper) {
+        this.helper = helper;
     }
 
-    public void setIdUser(int idUser) {
-        this.idUser = idUser;
-    }
+    public void setRequester(int requester) {
+            this.requester = requester;
+        }
 
+    public void setValidator(int validator) {
+            this.validator = validator;
+        }
 }
