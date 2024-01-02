@@ -49,26 +49,6 @@ public class MissionController {
         System.out.println("Table created.");
     }
 
-    @GetMapping("")
-    public void dbMissions() throws Exception {
-        // Return the values of the table Mission
-        ResultSet rs = connection.createStatement().executeQuery(
-                "SELECT * FROM Mission"
-        );
-
-        while (rs.next()) {
-            System.out.println(
-                    rs.getString("id") + " " +
-                            rs.getString("state") + " " +
-                            rs.getString("title") + " " +
-                            rs.getString("description") + " " +
-                            rs.getString("Helper") + " " +
-                            rs.getString("Requester") + " " +
-                            rs.getString("Validator"));
-        }
-
-    }
-
     @GetMapping("/insert")
     public String testInsert() throws Exception {
         Mission mission = new Mission(Mission.StateMission.WAITING, "AIDE", "QUI VEUT MON AIDE ?????? JE SUIS GENTIL", 1);
@@ -256,6 +236,30 @@ public class MissionController {
         // Return the mission with the id "id"
         ResultSet rs = connection.createStatement().executeQuery(
                 "SELECT * FROM Mission WHERE id = " + id
+        );
+
+        while (rs.next()) {
+            str = rs.getString("id") + " " +
+                            rs.getString("state") + " " +
+                            rs.getString("title") + " " +
+                            rs.getString("description") + " " +
+                            rs.getString("Helper") + " " +
+                            rs.getString("Requester") + " " +
+                            rs.getString("Validator");
+            System.out.println(str);
+            list.add(str);
+        }
+
+        return list;
+    }
+
+    @GetMapping("/show/all")
+    public ArrayList<String> dbShowAll() throws Exception {
+        ArrayList<String> list = new ArrayList<String>();
+        String str;
+        // Return the mission with the id "id"
+        ResultSet rs = connection.createStatement().executeQuery(
+                "SELECT * FROM Mission"
         );
 
         while (rs.next()) {
