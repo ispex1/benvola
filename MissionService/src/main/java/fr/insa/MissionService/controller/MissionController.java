@@ -33,6 +33,7 @@ public class MissionController {
         }
     }
 
+    /*
     @GetMapping("/db/createTable")
     public void dbTable() throws Exception {
         connection.createStatement().executeUpdate(
@@ -47,23 +48,22 @@ public class MissionController {
         );
 
         System.out.println("Table created.");
-    }
+    }*/
 
-    @GetMapping("/insert")
+    /*
+    @GetMapping("/testInsert")
     public String testInsert() throws Exception {
         Mission mission = new Mission(Mission.StateMission.WAITING, "AIDE", "QUI VEUT MON AIDE ?????? JE SUIS GENTIL", 1);
-        //Mission mission2 = new Mission(Mission.StateMission.WAITING_FOR_VALIDATION, "SVP??", "J'AI BESOIN DE FAIRE CACA", 3, 2);
+        //Mission mission2 = new Mission(Mission.StateMission.WAITING_FOR_VALIDATION, "SVP??", "J'AI BESOIN DE VOUS", 3, 2);
         dbInsert(mission);
-        //String merci2 = dbInsert(mission2);
-        // get the id of the name of the new mission from the db
+        //dbInsert(mission2);
 
         return "Mission inserted.";
-    }
+    }*/
 
     @PostMapping("/insert")
     public void dbInsert(@RequestBody Mission mission) throws Exception {
-        // I want to insert a new mission in the table Mission
-        // I want to return the id of the new mission
+        // Insert the mission "mission" in the table Mission
         if (mission.getHelper() != 0) {
             connection.createStatement().executeUpdate(
                 "INSERT INTO Mission (state, title, description, Helper) VALUES (" +
@@ -149,28 +149,27 @@ public class MissionController {
         );
 
         System.out.println("The mission with id " + id + " has been updated to have requester " + requester + ".");
-
     }
 
     /* SHOW MISSIONS */
 
     @GetMapping("/show/active/{id}")
     public ArrayList<String> dbShowActive(@PathVariable int id) throws Exception {
-        ArrayList<String> list = new ArrayList<String>();
-        String str;
-
         // Return the active missions of the user with the id "id"
         ResultSet rs = connection.createStatement().executeQuery(
                 "SELECT * FROM Mission WHERE (Helper = " + id + " OR Requester = " + id + ") AND state != 'DONE'"
         );
 
+        ArrayList<String> list = new ArrayList<String>();
+        String str;
+
         while (rs.next()) {
-            str = rs.getString("id") + " " +
-                            rs.getString("state") + " " +
-                            rs.getString("title") + " " +
-                            rs.getString("description") + " " +
-                            rs.getString("Helper") + " " +
-                            rs.getString("Requester") + " " +
+            str = rs.getString("id") + " | " +
+                            rs.getString("state") + " | " +
+                            rs.getString("title") + " | " +
+                            rs.getString("description") + " | " +
+                            rs.getString("Helper") + " | " +
+                            rs.getString("Requester") + " | " +
                             rs.getString("Validator");
             System.out.println(str);
             list.add(str);
@@ -181,21 +180,21 @@ public class MissionController {
 
     @GetMapping("/show/done/{id}")
     public ArrayList<String> dbShowDone(@PathVariable int id) throws Exception {
-        ArrayList<String> list = new ArrayList<String>();
-        String str;
-
-        // Return the done missions of the user with the id "id"
+       // Return the done missions of the user with the id "id"
         ResultSet rs = connection.createStatement().executeQuery(
                 "SELECT * FROM Mission WHERE (Helper = " + id + " OR Requester = " + id + ") AND state = 'DONE'"
         );
 
+        ArrayList<String> list = new ArrayList<String>();
+        String str;
+
         while (rs.next()) {
-            str = rs.getString("id") + " " +
-                            rs.getString("state") + " " +
-                            rs.getString("title") + " " +
-                            rs.getString("description") + " " +
-                            rs.getString("Helper") + " " +
-                            rs.getString("Requester") + " " +
+            str = rs.getString("id") + " | " +
+                            rs.getString("state") + " | " +
+                            rs.getString("title") + " | " +
+                            rs.getString("description") + " | " +
+                            rs.getString("Helper") + " | " +
+                            rs.getString("Requester") + " | " +
                             rs.getString("Validator");
             System.out.println(str);
             list.add(str);
@@ -206,21 +205,21 @@ public class MissionController {
 
     @GetMapping("/show/all/{id}")
     public ArrayList<String> dbShowAll(@PathVariable int id) throws Exception {
-        ArrayList<String> list = new ArrayList<String>();
-        String str;
-
         // Return all the missions of the user with the id "id"
         ResultSet rs = connection.createStatement().executeQuery(
                 "SELECT * FROM Mission WHERE (Helper = " + id + " OR Requester = " + id + ")"
         );
 
+        ArrayList<String> list = new ArrayList<String>();
+        String str;
+
         while (rs.next()) {
-               str = rs.getString("id") + " " +
-                                rs.getString("state") + " " +
-                                rs.getString("title") + " " +
-                                rs.getString("description") + " " +
-                                rs.getString("Helper") + " " +
-                                rs.getString("Requester") + " " +
+               str = rs.getString("id") + " | " +
+                                rs.getString("state") + " | " +
+                                rs.getString("title") + " | " +
+                                rs.getString("description") + " | " +
+                                rs.getString("Helper") + " | " +
+                                rs.getString("Requester") + " | " +
                                 rs.getString("Validator");
                 System.out.println(str);
                 list.add(str);
@@ -231,20 +230,21 @@ public class MissionController {
 
     @GetMapping("/show/{id}")
     public ArrayList<String> dbShow(@PathVariable int id) throws Exception {
-        ArrayList<String> list = new ArrayList<String>();
-        String str;
         // Return the mission with the id "id"
         ResultSet rs = connection.createStatement().executeQuery(
                 "SELECT * FROM Mission WHERE id = " + id
         );
 
+        ArrayList<String> list = new ArrayList<String>();
+        String str;
+
         while (rs.next()) {
-            str = rs.getString("id") + " " +
-                            rs.getString("state") + " " +
-                            rs.getString("title") + " " +
-                            rs.getString("description") + " " +
-                            rs.getString("Helper") + " " +
-                            rs.getString("Requester") + " " +
+            str = rs.getString("id") + " | " +
+                            rs.getString("state") + " | " +
+                            rs.getString("title") + " | " +
+                            rs.getString("description") + " | " +
+                            rs.getString("Helper") + " | " +
+                            rs.getString("Requester") + " | " +
                             rs.getString("Validator");
             System.out.println(str);
             list.add(str);
@@ -255,20 +255,21 @@ public class MissionController {
 
     @GetMapping("/show/all")
     public ArrayList<String> dbShowAll() throws Exception {
-        ArrayList<String> list = new ArrayList<String>();
-        String str;
         // Return the mission with the id "id"
         ResultSet rs = connection.createStatement().executeQuery(
                 "SELECT * FROM Mission"
         );
 
+        ArrayList<String> list = new ArrayList<String>();
+        String str;
+
         while (rs.next()) {
-            str = rs.getString("id") + " " +
-                            rs.getString("state") + " " +
-                            rs.getString("title") + " " +
-                            rs.getString("description") + " " +
-                            rs.getString("Helper") + " " +
-                            rs.getString("Requester") + " " +
+            str = rs.getString("id") + " | " +
+                            rs.getString("state") + " | " +
+                            rs.getString("title") + " | " +
+                            rs.getString("description") + " | " +
+                            rs.getString("Helper") + " | " +
+                            rs.getString("Requester") + " | " +
                             rs.getString("Validator");
             System.out.println(str);
             list.add(str);

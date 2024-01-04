@@ -1,5 +1,7 @@
 package fr.insa.MissionService.model;
 
+import com.fasterxml.jackson.annotation.JsonCreator;
+
 public class Mission {
 
     public enum StateMission {
@@ -16,6 +18,7 @@ public class Mission {
     private int requester;
     private int validator;
 
+    @JsonCreator
     public Mission(StateMission state, String title, String description, int helper) {
         this.state = state;
         this.title = title;
@@ -23,6 +26,7 @@ public class Mission {
         this.helper = helper;
     }
 
+    @JsonCreator
     public Mission(StateMission state, String title, String description, int requester, int validator) {
         this.state = state;
         this.title = title;

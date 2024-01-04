@@ -1,5 +1,7 @@
 package fr.insa.UserService.model;
 
+import com.fasterxml.jackson.annotation.JsonCreator;
+
 public class User {
 
     public enum Role {
@@ -17,6 +19,7 @@ public class User {
     private int validatorId;
     // private Float score;
 
+    @JsonCreator
     public User(int id, String pseudo,String firstname, String lastname, Role role) {
         this.id = id;
         this.pseudo = pseudo;
@@ -25,6 +28,7 @@ public class User {
         this.role = role;
     }
 
+    @JsonCreator
     public User(int id, String pseudo,String firstname, String lastname, Role role, int validatorId) {
         this.id = id;
         this.pseudo = pseudo;

@@ -2,10 +2,7 @@ package fr.insa.UserService.controller;
 
 import fr.insa.UserService.model.User;
 import org.springframework.beans.factory.annotation.Autowired;
-import org.springframework.web.bind.annotation.GetMapping;
-import org.springframework.web.bind.annotation.PathVariable;
-import org.springframework.web.bind.annotation.RequestMapping;
-import org.springframework.web.bind.annotation.RestController;
+import org.springframework.web.bind.annotation.*;
 
 import java.sql.Connection;
 import java.sql.ResultSet;
@@ -35,6 +32,7 @@ public class UserController {
         }
     }
 
+    /*
     @GetMapping("/db/createTable")
     public void dbAddTable() throws Exception {
         connection.createStatement().executeUpdate(
@@ -49,8 +47,9 @@ public class UserController {
         );
 
         System.out.println("Table User created.");
-    }
+    }*/
 
+    /*
     @GetMapping("/test/add")
     public void testAdd() throws Exception {
         connection.createStatement().executeUpdate(
@@ -63,6 +62,33 @@ public class UserController {
 
         connection.createStatement().executeUpdate(
                 "INSERT INTO User (role, pseudo, firstname, lastname, validatorId) VALUES ('Requester', 'pseudo', 'firstname', 'lastname', '2')"
+        );
+
+        System.out.println("User added.");
+    }*/
+
+    @PostMapping ("/add/normal")
+    public void addUser(@RequestBody User user) throws Exception {
+        connection.createStatement().executeUpdate(
+                "INSERT INTO User (role, pseudo, firstname, lastname) VALUES ('" +
+                        user.getRole() + "', '" +
+                        user.getPseudo() + "', '" +
+                        user.getFirstname() + "', '" +
+                        user.getLastname() + "')"
+        );
+
+        System.out.println("User added.");
+    }
+
+    @PostMapping ("/add/requester")
+    public void addRequester(@RequestBody User user) throws Exception {
+        connection.createStatement().executeUpdate(
+                "INSERT INTO User (role, pseudo, firstname, lastname, validatorId) VALUES ('" +
+                        user.getRole() + "', '" +
+                        user.getPseudo() + "', '" +
+                        user.getFirstname() + "', '" +
+                        user.getLastname() + "', '" +
+                        user.getValidatorId() + "')"
         );
 
         System.out.println("User added.");
@@ -164,6 +190,7 @@ public class UserController {
 
     @GetMapping("/config/{id1}/{id2}")
     public void setValidator(@PathVariable int id1, @PathVariable int id2) throws Exception {
+        // Set to the user with id1 the validator with id2
         connection.createStatement().executeUpdate(
                 "UPDATE User SET validatorId = " + id2 + " WHERE id = " + id1
         );
@@ -173,6 +200,7 @@ public class UserController {
 
     @GetMapping("/admin/{id}")
     public void setAdmin(@PathVariable int id) throws Exception {
+        // Set the role of the user with id to Admin
         connection.createStatement().executeUpdate(
                 "UPDATE User SET role = 'Admin' WHERE id = " + id
         );
