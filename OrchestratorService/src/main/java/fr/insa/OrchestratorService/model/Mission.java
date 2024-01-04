@@ -1,4 +1,4 @@
-package fr.insa.MissionService.model;
+package fr.insa.OrchestratorService.model;
 
 import com.fasterxml.jackson.annotation.JsonCreator;
 

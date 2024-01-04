@@ -99,6 +99,16 @@ public class MissionController {
 
     /* UPDATE STATE */
 
+    @GetMapping("/update/cancelled/{id}/{justification}")
+    public void dbUpdateCancelled(@PathVariable int id, @PathVariable String justification) throws Exception {
+        // Update the state of the mission with the id "id" to CANCELLED + give a justification in the description of the mission
+        connection.createStatement().executeUpdate(
+                "UPDATE Mission SET state = 'CANCELLED', description = 'CANCELLED BECAUSE : " + justification + "' WHERE id = " + id
+        );
+
+        System.out.println("The mission with id " + id + " has been updated to CANCELLED.");
+    }
+
     @GetMapping("/update/waiting/{id}")
     public void dbUpdateWaiting(@PathVariable int id) throws Exception {
         // Update the state of the mission with the id "id" to WAITING
@@ -277,5 +287,7 @@ public class MissionController {
 
         return list;
     }
+
+
 
 }
