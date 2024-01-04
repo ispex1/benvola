@@ -32,7 +32,16 @@ public class UserController {
         }
     }
 
-    /*
+
+    @GetMapping("/db/dropTable")
+    public void dbDropTable() throws Exception {
+        connection.createStatement().executeUpdate(
+                "DROP TABLE IF EXISTS User"
+        );
+
+        System.out.println("Table User dropped.");
+    }
+
     @GetMapping("/db/createTable")
     public void dbAddTable() throws Exception {
         connection.createStatement().executeUpdate(
@@ -42,12 +51,12 @@ public class UserController {
                         "pseudo VARCHAR(255) NOT NULL," +
                         "firstname VARCHAR(255) NOT NULL," +
                         "lastname VARCHAR(255) NOT NULL," +
-                        "validatorId INT" +
+                        "validatorPseudo VARCHAR(255)" +
                 ")"
         );
 
         System.out.println("Table User created.");
-    }*/
+    }
 
     /*
     @GetMapping("/test/add")
@@ -67,31 +76,27 @@ public class UserController {
         System.out.println("User added.");
     }*/
 
-    @PostMapping ("/add/normal")
-    public void addUser(@RequestBody User user) throws Exception {
-        connection.createStatement().executeUpdate(
-                "INSERT INTO User (role, pseudo, firstname, lastname) VALUES ('" +
-                        user.getRole() + "', '" +
-                        user.getPseudo() + "', '" +
-                        user.getFirstname() + "', '" +
-                        user.getLastname() + "')"
-        );
-
-        System.out.println("User added.");
-    }
-
-    @PostMapping ("/add/requester")
-    public void addRequester(@RequestBody User user) throws Exception {
-        connection.createStatement().executeUpdate(
-                "INSERT INTO User (role, pseudo, firstname, lastname, validatorId) VALUES ('" +
-                        user.getRole() + "', '" +
-                        user.getPseudo() + "', '" +
-                        user.getFirstname() + "', '" +
-                        user.getLastname() + "', '" +
-                        user.getValidatorId() + "')"
-        );
-
-        System.out.println("User added.");
+    @PostMapping ("/add/")
+    public String addUser(@RequestBody User user) throws Exception {
+        if (user.getValidatorPseudo() == null) {
+            connection.createStatement().executeUpdate(
+                    "INSERT INTO User (role, pseudo, firstname, lastname) VALUES ('" +
+                            user.getRole() + "', '" +
+                            user.getPseudo() + "', '" +
+                            user.getFirstname() + "', '" +
+                            user.getLastname() + "')"
+            );
+        } else {
+            connection.createStatement().executeUpdate(
+                    "INSERT INTO User (role, pseudo, firstname, lastname, validatorPseudo) VALUES ('" +
+                            user.getRole() + "', '" +
+                            user.getPseudo() + "', '" +
+                            user.getFirstname() + "', '" +
+                            user.getLastname() + "', '" +
+                            user.getValidatorPseudo() + "')"
+            );
+        }
+        return ("User added.");
     }
 
     @GetMapping("/id/{id}")
@@ -102,7 +107,7 @@ public class UserController {
 
         if (rs.next()) {
 
-            if (rs.getInt("validatorId") == 0) {
+            if (rs.getString("validatorPseudo") == null) {
                 return new User(
                         rs.getInt("id"),
                         rs.getString("pseudo"),
@@ -117,7 +122,7 @@ public class UserController {
                         rs.getString("firstname"),
                         rs.getString("lastname"),
                         User.Role.valueOf(rs.getString("role")),
-                        rs.getInt("validatorId")
+                        rs.getString("validatorPseudo)")
                 );
             }
         }
@@ -133,7 +138,7 @@ public class UserController {
 
         if (rs.next()) {
 
-            if (rs.getInt("validatorId") == 0) {
+            if (rs.getString("validatorPseudo") == null) {
                 return new User(
                         rs.getInt("id"),
                         rs.getString("pseudo"),
@@ -148,7 +153,7 @@ public class UserController {
                         rs.getString("firstname"),
                         rs.getString("lastname"),
                         User.Role.valueOf(rs.getString("role")),
-                        rs.getInt("validatorId")
+                        rs.getString("validatorPseudo")
                 );
             }
         }
@@ -180,7 +185,7 @@ public class UserController {
                         rs.getString("firstname"),
                         rs.getString("lastname"),
                         User.Role.valueOf(rs.getString("role")),
-                        rs.getInt("validatorId")
+                        rs.getString("validatorPseudo")
                 ));
             }
         }
@@ -188,24 +193,22 @@ public class UserController {
         return users;
     }
 
-    @GetMapping("/config/{id1}/{id2}")
-    public void setValidator(@PathVariable int id1, @PathVariable int id2) throws Exception {
-        // Set to the user with id1 the validator with id2
+    @PostMapping("/configureValidator")
+    public String configureValidator(@RequestBody User user) throws Exception {
         connection.createStatement().executeUpdate(
-                "UPDATE User SET validatorId = " + id2 + " WHERE id = " + id1
+                "UPDATE User SET validatorPseudo = '" + user.getValidatorPseudo() + "' WHERE id = " + user.getId()
         );
 
-        System.out.println("Validator set.");
+        return("Validator configured.");
     }
 
-    @GetMapping("/admin/{id}")
-    public void setAdmin(@PathVariable int id) throws Exception {
-        // Set the role of the user with id to Admin
+    @PostMapping("/makeAdmin")
+    public String makeAdmin(@RequestBody User user) throws Exception {
         connection.createStatement().executeUpdate(
-                "UPDATE User SET role = 'Admin' WHERE id = " + id
+                "UPDATE User SET role = 'Admin' WHERE id = " + user.getId()
         );
 
-        System.out.println("Admin set.");
+        return("User is now admin.");
     }
 
 }

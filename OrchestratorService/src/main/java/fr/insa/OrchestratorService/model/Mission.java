@@ -19,6 +19,8 @@ public class Mission {
     private int requester;
     private int validator;
 
+
+
     @JsonCreator
     public Mission(StateMission state, String title, String description, int helper) {
         this.state = state;
@@ -30,6 +32,27 @@ public class Mission {
     @JsonCreator
     public Mission(StateMission state, String title, String description, int requester, int validator) {
         this.state = state;
+        this.title = title;
+        this.description = description;
+        this.requester = requester;
+        this.validator = validator;
+    }
+
+    @JsonCreator
+    public Mission(String title, String description, int helper) {
+        this.title = title;
+        this.description = description;
+        this.helper = helper;
+    }
+
+    @JsonCreator
+    public Mission(String title, String description) {
+        this.title = title;
+        this.description = description;
+    }
+
+    @JsonCreator
+    public Mission(String title, String description, int requester, int validator) {
         this.title = title;
         this.description = description;
         this.requester = requester;

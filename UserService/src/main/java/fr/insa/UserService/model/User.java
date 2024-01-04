@@ -16,7 +16,7 @@ public class User {
     private String firstname;
     private String lastname;
     private Role role;
-    private int validatorId;
+    private String validatorPseudo;
     // private Float score;
 
     @JsonCreator
@@ -29,13 +29,13 @@ public class User {
     }
 
     @JsonCreator
-    public User(int id, String pseudo,String firstname, String lastname, Role role, int validatorId) {
+    public User(int id, String pseudo,String firstname, String lastname, Role role, String validatorPseudo) {
         this.id = id;
         this.pseudo = pseudo;
         this.firstname = firstname;
         this.lastname = lastname;
         this.role = role;
-        this.validatorId = validatorId;
+        this.validatorPseudo = validatorPseudo;
     }
 
     public int getId() {
@@ -53,8 +53,8 @@ public class User {
     public Role getRole() {
         return this.role;
     }
-    public int getValidatorId() {
-        return this.validatorId;
+    public String getValidatorPseudo() {
+        return this.validatorPseudo;
     }
 
     public void setId(int id) {
@@ -72,7 +72,7 @@ public class User {
     public void setRole(Role role) {
         this.role = role;
     }
-    public void setValidatorId(int validatorId) {
-        this.validatorId = validatorId;
+    public void setValidatorPseudo(String validatorPseudo) {
+        this.validatorPseudo = validatorPseudo;
     }
 }
