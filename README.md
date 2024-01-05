@@ -4,7 +4,9 @@ BenVola project for Microservices course INSA
 BenVola projet is an application based on the aid for vulnerable persons.
 
 To test our microservice architecture, you need firstly to execute the "ConfigServiceApplication". 
+
 Then, you can execute the "EurekaServerApplication". 
+
 And finaly, you can run the MissionService, UserService, and the OrchestratorService. 
 
 MissionService :
