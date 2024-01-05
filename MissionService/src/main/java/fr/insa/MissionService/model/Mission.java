@@ -20,23 +20,6 @@ public class Mission {
     private int validator;
 
     @JsonCreator
-    public Mission(StateMission state, String title, String description, int helper) {
-        this.state = state;
-        this.title = title;
-        this.description = description;
-        this.helper = helper;
-    }
-
-    @JsonCreator
-    public Mission(StateMission state, String title, String description, int requester, int validator) {
-        this.state = state;
-        this.title = title;
-        this.description = description;
-        this.requester = requester;
-        this.validator = validator;
-    }
-
-    @JsonCreator
     public Mission(int id, StateMission state, String title, String description, int helper, int requester, int validator) {
         this.id = id;
         this.state = state;
@@ -47,28 +30,38 @@ public class Mission {
         this.validator = validator;
     }
 
-    @JsonCreator
-    public Mission(String title, String description) {
-        this.title = title;
-        this.description = description;
-    }
-
-    @JsonCreator
-    public Mission(String title, String description, int helper) {
+    public Mission(StateMission state, String title, String description, int helper) {
+        this.state = state;
         this.title = title;
         this.description = description;
         this.helper = helper;
     }
 
-    @JsonCreator
-    public Mission(String title, String description, int requester, int validator) {
+    public Mission(StateMission state, String title, String description, int requester, int validator) {
+        this.state = state;
         this.title = title;
         this.description = description;
         this.requester = requester;
         this.validator = validator;
     }
 
+    public Mission(String title, String description) {
+        this.title = title;
+        this.description = description;
+    }
 
+    public Mission(String title, String description, int helper) {
+        this.title = title;
+        this.description = description;
+        this.helper = helper;
+    }
+
+    public Mission(String title, String description, int requester, int validator) {
+        this.title = title;
+        this.description = description;
+        this.requester = requester;
+        this.validator = validator;
+    }
 
     public int getId() {
         return id;

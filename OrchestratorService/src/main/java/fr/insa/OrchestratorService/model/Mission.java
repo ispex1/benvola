@@ -20,8 +20,16 @@ public class Mission {
     private int validator;
 
 
+    public Mission(int id, StateMission state, String title, String description, int helper, int requester, int validator) {
+        this.id = id;
+        this.state = state;
+        this.title = title;
+        this.description = description;
+        this.helper = helper;
+        this.requester = requester;
+        this.validator = validator;
+    }
 
-    @JsonCreator
     public Mission(StateMission state, String title, String description, int helper) {
         this.state = state;
         this.title = title;
@@ -29,7 +37,6 @@ public class Mission {
         this.helper = helper;
     }
 
-    @JsonCreator
     public Mission(StateMission state, String title, String description, int requester, int validator) {
         this.state = state;
         this.title = title;
@@ -38,7 +45,6 @@ public class Mission {
         this.validator = validator;
     }
 
-    @JsonCreator
     public Mission(String title, String description, int helper) {
         this.title = title;
         this.description = description;
@@ -51,7 +57,6 @@ public class Mission {
         this.description = description;
     }
 
-    @JsonCreator
     public Mission(String title, String description, int requester, int validator) {
         this.title = title;
         this.description = description;

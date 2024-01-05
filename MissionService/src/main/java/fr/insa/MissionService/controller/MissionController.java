@@ -33,6 +33,7 @@ public class MissionController {
         }
     }
 
+    /*
     @GetMapping("/db/dropTable")
     public void dbDropTable() throws Exception {
         connection.createStatement().executeUpdate(
@@ -40,8 +41,9 @@ public class MissionController {
         );
 
         System.out.println("Table dropped.");
-    }
+    }*/
 
+    /*
     @GetMapping("/db/createTable")
     public void dbTable() throws Exception {
         connection.createStatement().executeUpdate(
@@ -56,15 +58,15 @@ public class MissionController {
         );
 
         System.out.println("Table created.");
-    }
+    }*/
 
     /*
     @GetMapping("/testInsert")
     public String testInsert() throws Exception {
-        Mission mission = new Mission(Mission.StateMission.WAITING, "AIDE", "QUI VEUT MON AIDE ?????? JE SUIS GENTIL", 1);
-        //Mission mission2 = new Mission(Mission.StateMission.WAITING_FOR_VALIDATION, "SVP??", "J'AI BESOIN DE VOUS", 3, 2);
-        dbInsert(mission);
-        //dbInsert(mission2);
+        Mission mission1 = new Mission(Mission.StateMission.WAITING, "AIDE", "QUI VEUT MON AIDE ?????? JE SUIS GENTIL", 1);
+        Mission mission2 = new Mission(Mission.StateMission.WAITING_FOR_VALIDATION, "SVP??", "J AI BESOIN DE VOUS", 3, 2);
+        missionAdd(mission1);
+        missionAdd(mission2);
 
         return "Mission inserted.";
     }*/
@@ -107,8 +109,8 @@ public class MissionController {
 
     /* UPDATE STATE */
 
-    @PostMapping("/update/cancelled/{id}/{justification}")
-    public String dbUpdateCancelled(@PathVariable int id, @PathVariable String justification) throws Exception {
+    @PostMapping("/update/cancel/{id}")
+    public String dbUpdateCancelled(@PathVariable int id, @RequestBody String justification) throws Exception {
         // Update the state of the mission with the id "id" to CANCELLED + give a justification in the description of the mission
         connection.createStatement().executeUpdate(
                 "UPDATE Mission SET state = 'CANCELLED', description = 'CANCELLED BECAUSE : " + justification + "' WHERE id = " + id
@@ -159,7 +161,7 @@ public class MissionController {
         return("The mission with id " + id + " has been updated to have helper " + helper + ".");
     }
 
-    @GetMapping("/update/requester/{id}/{requester}")
+    @PostMapping("/update/requester/{id}/{requester}")
     public String dbUpdateRequester(@PathVariable int id, @PathVariable int requester) throws Exception {
         // Update the requester of the mission with the id "id" to "requester"
         connection.createStatement().executeUpdate(
@@ -170,6 +172,147 @@ public class MissionController {
     }
 
     /* SHOW MISSIONS */
+
+    @GetMapping("/show/offer/requester/{id}")
+    public Mission[] dbShowOfferRequester(@PathVariable int id) throws Exception {
+        // Return the missions in waiting status of the requester with the id "id"
+        ResultSet rs = connection.createStatement().executeQuery(
+                "SELECT * FROM Mission WHERE (Helper != 0) AND state = 'WAITING'"
+        );
+
+        ArrayList<Mission> list = new ArrayList<Mission>();
+
+        while (rs.next()) {
+            list.add(new Mission(rs.getInt("id"),
+                    Mission.StateMission.valueOf(rs.getString("state")),
+                    rs.getString("title"),
+                    rs.getString("description"),
+                    rs.getInt("Helper"),
+                    rs.getInt("Requester"),
+                    rs.getInt("Validator")
+            ));
+        }
+
+        return list.isEmpty() ? null : list.toArray(new Mission[0]);
+    }
+
+    @GetMapping("show/offer/helper/{id}")
+    public Mission[] dbShowOfferHelper(@PathVariable int id) throws Exception {
+        // Return the missions in waiting status of the helper with the id "id"
+        ResultSet rs = connection.createStatement().executeQuery(
+                "SELECT * FROM Mission WHERE (Requester != 0) AND state = 'WAITING'"
+        );
+
+        ArrayList<Mission> list = new ArrayList<Mission>();
+
+        while (rs.next()) {
+            list.add(new Mission(rs.getInt("id"),
+                    Mission.StateMission.valueOf(rs.getString("state")),
+                    rs.getString("title"),
+                    rs.getString("description"),
+                    rs.getInt("Helper"),
+                    rs.getInt("Requester"),
+                    rs.getInt("Validator")
+            ));
+        }
+
+        return list.isEmpty() ? null : list.toArray(new Mission[0]);
+    }
+
+    @GetMapping("show/offer/validator/{id}")
+    public Mission[] dbShowOfferValidator(@PathVariable int id) throws Exception {
+        // Return the missions in waiting validation status of the validator with the id "id"
+        ResultSet rs = connection.createStatement().executeQuery(
+                "SELECT * FROM Mission WHERE (Validator = " + id + ") AND state = 'WAITING_FOR_VALIDATION'"
+        );
+
+        ArrayList<Mission> list = new ArrayList<Mission>();
+
+        while (rs.next()) {
+            list.add(new Mission(rs.getInt("id"),
+                    Mission.StateMission.valueOf(rs.getString("state")),
+                    rs.getString("title"),
+                    rs.getString("description"),
+                    rs.getInt("Helper"),
+                    rs.getInt("Requester"),
+                    rs.getInt("Validator")
+            ));
+        }
+
+        return list.isEmpty() ? null : list.toArray(new Mission[0]);
+    }
+
+
+    @GetMapping("/show/waiting/{id}")
+    public Mission[] dbShowActive(@PathVariable int id) throws Exception {
+        // Return the missions in waiting status of the user with the id "id"
+        ResultSet rs = connection.createStatement().executeQuery(
+                "SELECT * FROM Mission WHERE (Helper = " + id + " OR Requester = " + id + " OR Validator = " + id + ") AND state = 'WAITING'"
+        );
+
+        ArrayList<Mission> list = new ArrayList<Mission>();
+
+        while (rs.next()) {
+            list.add(new Mission(rs.getInt("id"),
+                    Mission.StateMission.valueOf(rs.getString("state")),
+                    rs.getString("title"),
+                    rs.getString("description"),
+                    rs.getInt("Helper"),
+                    rs.getInt("Requester"),
+                    rs.getInt("Validator")
+            ));
+        }
+
+        return list.toArray(new Mission[0]);
+    }
+
+    @GetMapping("/show/inprogress/{id}")
+    public Mission[] dbShowInProgress(@PathVariable int id) throws Exception {
+        // Return the missions in progress of the user with the id "id"
+        ResultSet rs = connection.createStatement().executeQuery(
+                "SELECT * FROM Mission WHERE (Helper = " + id + " OR Requester = " + id + " OR Validator = " + id + ") AND state = 'IN_PROGRESS'"
+        );
+
+        ArrayList<Mission> list = new ArrayList<Mission>();
+
+        while (rs.next()) {
+            list.add(new Mission(rs.getInt("id"),
+                    Mission.StateMission.valueOf(rs.getString("state")),
+                    rs.getString("title"),
+                    rs.getString("description"),
+                    rs.getInt("Helper"),
+                    rs.getInt("Requester"),
+                    rs.getInt("Validator")
+            ));
+        }
+
+        return list.toArray(new Mission[0]);
+    }
+
+
+
+    @GetMapping("/show/done/{id}")
+    public Mission[] dbShowDone(@PathVariable int id) throws Exception {
+       // Return the done missions of the user with the id "id"
+        ResultSet rs = connection.createStatement().executeQuery(
+                "SELECT * FROM Mission WHERE (Helper = " + id + " OR Requester = " + id + " OR Validator = " + id + ") AND state = 'DONE'"
+        );
+
+        ArrayList<Mission> list = new ArrayList<Mission>();
+
+        while (rs.next()) {
+            list.add(new Mission(rs.getInt("id"),
+                    Mission.StateMission.valueOf(rs.getString("state")),
+                    rs.getString("title"),
+                    rs.getString("description"),
+                    rs.getInt("Helper"),
+                    rs.getInt("Requester"),
+                    rs.getInt("Validator")
+            ));
+        }
+
+        return list.isEmpty() ? null : list.toArray(new Mission[0]);
+    }
 
     @GetMapping("/show/waitingforvalidation/{id}")
     public Mission[] dbShowWaitingValidation(@PathVariable int id) throws Exception {
@@ -191,210 +334,120 @@ public class MissionController {
             ));
         }
 
-        return list.toArray(new Mission[0]);
-    }
-
-    @GetMapping("/show/waiting/{id}")
-    public ArrayList<String> dbShowActive(@PathVariable int id) throws Exception {
-        // Return the missions in waiting status of the user with the id "id"
-        ResultSet rs = connection.createStatement().executeQuery(
-                "SELECT * FROM Mission WHERE (Helper = " + id + " OR Requester = " + id + ") AND state = 'WAITING'"
-        );
-
-        ArrayList<String> list = new ArrayList<String>();
-        String str;
-
-        while (rs.next()) {
-            str = rs.getString("id") + " | " +
-                            rs.getString("state") + " | " +
-                            rs.getString("title") + " | " +
-                            rs.getString("description") + " | " +
-                            rs.getString("Helper") + " | " +
-                            rs.getString("Requester") + " | " +
-                            rs.getString("Validator");
-            System.out.println(str);
-            list.add(str);
-        }
-
-        return list;
-    }
-
-    @GetMapping("/show/inprogress/{id}")
-    public ArrayList<String> dbShowInProgress(@PathVariable int id) throws Exception {
-        // Return the missions in progress of the user with the id "id"
-        ResultSet rs = connection.createStatement().executeQuery(
-                "SELECT * FROM Mission WHERE (Helper = " + id + " OR Requester = " + id + ") AND state = 'IN_PROGRESS'"
-        );
-
-        ArrayList<String> list = new ArrayList<String>();
-        String str;
-
-        while (rs.next()) {
-            str = rs.getString("id") + " | " +
-                            rs.getString("state") + " | " +
-                            rs.getString("title") + " | " +
-                            rs.getString("description") + " | " +
-                            rs.getString("Helper") + " | " +
-                            rs.getString("Requester") + " | " +
-                            rs.getString("Validator");
-            System.out.println(str);
-            list.add(str);
-        }
-
-        return list;
-    }
-
-    @GetMapping("/show/done/{id}")
-    public ArrayList<String> dbShowDone(@PathVariable int id) throws Exception {
-       // Return the done missions of the user with the id "id"
-        ResultSet rs = connection.createStatement().executeQuery(
-                "SELECT * FROM Mission WHERE (Helper = " + id + " OR Requester = " + id + ") AND state = 'DONE'"
-        );
-
-        ArrayList<String> list = new ArrayList<String>();
-        String str;
-
-        while (rs.next()) {
-            str = rs.getString("id") + " | " +
-                            rs.getString("state") + " | " +
-                            rs.getString("title") + " | " +
-                            rs.getString("description") + " | " +
-                            rs.getString("Helper") + " | " +
-                            rs.getString("Requester") + " | " +
-                            rs.getString("Validator");
-            System.out.println(str);
-            list.add(str);
-        }
-
-        return list;
+        return list.isEmpty() ? null : list.toArray(new Mission[0]);
     }
 
     @GetMapping ("/show/cancelled/{id}")
-    public ArrayList<String> dbShowCancelled(@PathVariable int id) throws Exception {
+    public Mission[] dbShowCancelled(@PathVariable int id) throws Exception {
         // Return the cancelled missions of the user with the id "id"
         ResultSet rs = connection.createStatement().executeQuery(
-                "SELECT * FROM Mission WHERE (Requester = " + id + ") AND state = 'CANCELLED'"
+                "SELECT * FROM Mission WHERE (Requester = " + id + " OR Validator = " + id + ") AND state = 'CANCELLED'"
         );
 
-        ArrayList<String> list = new ArrayList<String>();
-        String str;
-
+        ArrayList<Mission> list = new ArrayList<Mission>();
 
         while (rs.next()) {
-            str = rs.getString("id") + " | " +
-                            rs.getString("state") + " | " +
-                            rs.getString("title") + " | " +
-                            rs.getString("description") + " | " +
-                            rs.getString("Helper") + " | " +
-                            rs.getString("Requester") + " | " +
-                            rs.getString("Validator");
-            System.out.println(str);
-            list.add(str);
+            list.add(new Mission(rs.getInt("id"),
+                    Mission.StateMission.valueOf(rs.getString("state")),
+                    rs.getString("title"),
+                    rs.getString("description"),
+                    rs.getInt("Helper"),
+                    rs.getInt("Requester"),
+                    rs.getInt("Validator")
+            ));
         }
 
-        return list;
+        return list.isEmpty() ? null : list.toArray(new Mission[0]);
     }
 
     @GetMapping("/show/all/{id}")
-    public ArrayList<String> dbShowAll(@PathVariable int id) throws Exception {
+    public Mission[] dbShowAll(@PathVariable int id) throws Exception {
         // Return all the missions of the user with the id "id"
         ResultSet rs = connection.createStatement().executeQuery(
                 "SELECT * FROM Mission WHERE (Helper = " + id + " OR Requester = " + id + ")"
         );
 
-        ArrayList<String> list = new ArrayList<String>();
-        String str;
+        ArrayList<Mission> list = new ArrayList<Mission>();
 
         while (rs.next()) {
-               str = rs.getString("id") + " | " +
-                                rs.getString("state") + " | " +
-                                rs.getString("title") + " | " +
-                                rs.getString("description") + " | " +
-                                rs.getString("Helper") + " | " +
-                                rs.getString("Requester") + " | " +
-                                rs.getString("Validator");
-                System.out.println(str);
-                list.add(str);
-            }
-
-        return list;
-    }
-
-    @GetMapping("/show/validator/{pseudo}")
-    public ArrayList<String> dbShowValidator(@PathVariable String pseudo) throws Exception {
-        // Return the missions waiting for validation of the user with the pseudo "pseudo"
-        ResultSet rs = connection.createStatement().executeQuery(
-                "SELECT * FROM Mission WHERE Validator = (SELECT id FROM User WHERE pseudo = '" + pseudo + "') AND state = 'WAITING_FOR_VALIDATION'"
-        );
-
-        ArrayList<String> list = new ArrayList<String>();
-        String str;
-
-        while (rs.next()) {
-            str = rs.getString("id") + " | " +
-                            rs.getString("state") + " | " +
-                            rs.getString("title") + " | " +
-                            rs.getString("description") + " | " +
-                            rs.getString("Helper") + " | " +
-                            rs.getString("Requester") + " | " +
-                            rs.getString("Validator");
-            System.out.println(str);
-            list.add(str);
+            list.add(new Mission(rs.getInt("id"),
+                    Mission.StateMission.valueOf(rs.getString("state")),
+                    rs.getString("title"),
+                    rs.getString("description"),
+                    rs.getInt("Helper"),
+                    rs.getInt("Requester"),
+                    rs.getInt("Validator")
+            ));
         }
 
-        return list;
+        return list.isEmpty() ? null : list.toArray(new Mission[0]);
+    }
+
+    @GetMapping("/show/validator/{id}")
+    public Mission[] dbShowValidator(@PathVariable int id) throws Exception {
+        // Return the missions waiting for validation of the user with the pseudo "pseudo"
+        ResultSet rs = connection.createStatement().executeQuery(
+                "SELECT * FROM Mission WHERE Validator = '" + id + "') AND state = 'WAITING_FOR_VALIDATION'"
+        );
+
+        ArrayList<Mission> list = new ArrayList<Mission>();
+
+        while (rs.next()) {
+            list.add(new Mission(rs.getInt("id"),
+                    Mission.StateMission.valueOf(rs.getString("state")),
+                    rs.getString("title"),
+                    rs.getString("description"),
+                    rs.getInt("Helper"),
+                    rs.getInt("Requester"),
+                    rs.getInt("Validator")
+            ));
+        }
+
+        return list.isEmpty() ? null : list.toArray(new Mission[0]);
     }
 
 
     @GetMapping("/show/{id}")
-    public ArrayList<String> dbShow(@PathVariable int id) throws Exception {
+    public Mission dbShow(@PathVariable int id) throws Exception {
         // Return the mission with the id "id"
         ResultSet rs = connection.createStatement().executeQuery(
                 "SELECT * FROM Mission WHERE id = " + id
         );
 
-        ArrayList<String> list = new ArrayList<String>();
-        String str;
-
-        while (rs.next()) {
-            str = rs.getString("id") + " | " +
-                            rs.getString("state") + " | " +
-                            rs.getString("title") + " | " +
-                            rs.getString("description") + " | " +
-                            rs.getString("Helper") + " | " +
-                            rs.getString("Requester") + " | " +
-                            rs.getString("Validator");
-            System.out.println(str);
-            list.add(str);
+        if (rs.next()) {
+            return new Mission(rs.getInt("id"),
+                    Mission.StateMission.valueOf(rs.getString("state")),
+                    rs.getString("title"),
+                    rs.getString("description"),
+                    rs.getInt("Helper"),
+                    rs.getInt("Requester"),
+                    rs.getInt("Validator")
+            );
         }
 
-        return list;
+        return null;
     }
 
     @GetMapping("/show/all")
-    public ArrayList<String> dbShowAll() throws Exception {
+    public Mission[] dbShowAll() throws Exception {
         ResultSet rs = connection.createStatement().executeQuery(
                 "SELECT * FROM Mission"
         );
 
-        ArrayList<String> list = new ArrayList<String>();
-        String str;
+        ArrayList<Mission> list = new ArrayList<Mission>();
 
         while (rs.next()) {
-            str = rs.getString("id") + " | " +
-                            rs.getString("state") + " | " +
-                            rs.getString("title") + " | " +
-                            rs.getString("description") + " | " +
-                            rs.getString("Helper") + " | " +
-                            rs.getString("Requester") + " | " +
-                            rs.getString("Validator");
-            System.out.println(str);
-            list.add(str);
+            list.add(new Mission(rs.getInt("id"),
+                    Mission.StateMission.valueOf(rs.getString("state")),
+                    rs.getString("title"),
+                    rs.getString("description"),
+                    rs.getInt("Helper"),
+                    rs.getInt("Requester"),
+                    rs.getInt("Validator")
+            ));
         }
 
-        return list;
+        return list.isEmpty() ? null : list.toArray(new Mission[0]);
     }
-
-
 
 }

@@ -32,7 +32,7 @@ public class UserController {
         }
     }
 
-
+    /*
     @GetMapping("/db/dropTable")
     public void dbDropTable() throws Exception {
         connection.createStatement().executeUpdate(
@@ -40,8 +40,9 @@ public class UserController {
         );
 
         System.out.println("Table User dropped.");
-    }
+    }*/
 
+    /*
     @GetMapping("/db/createTable")
     public void dbAddTable() throws Exception {
         connection.createStatement().executeUpdate(
@@ -56,27 +57,27 @@ public class UserController {
         );
 
         System.out.println("Table User created.");
-    }
+    }*/
 
     /*
     @GetMapping("/test/add")
     public void testAdd() throws Exception {
         connection.createStatement().executeUpdate(
-                "INSERT INTO User (role, pseudo, firstname, lastname) VALUES ('Helper', 'pseudo', 'firstname', 'lastname')"
+                "INSERT INTO User (role, pseudo, firstname, lastname) VALUES ('Helper', 'ispex', 'este', 'ban')"
         );
 
         connection.createStatement().executeUpdate(
-                "INSERT INTO User (role, pseudo, firstname, lastname) VALUES ('Validator', 'pseudo', 'firstname', 'lastname')"
+                "INSERT INTO User (role, pseudo, firstname, lastname) VALUES ('Validator', 'nawa', 'nana', 'gueguer')"
         );
 
         connection.createStatement().executeUpdate(
-                "INSERT INTO User (role, pseudo, firstname, lastname, validatorId) VALUES ('Requester', 'pseudo', 'firstname', 'lastname', '2')"
+                "INSERT INTO User (role, pseudo, firstname, lastname, validatorPseudo) VALUES ('Requester', 'bacchus', 'gab', 'bord', 'nawa')"
         );
 
         System.out.println("User added.");
     }*/
 
-    @PostMapping ("/add/")
+    @PostMapping ("/add")
     public String addUser(@RequestBody User user) throws Exception {
         if (user.getValidatorPseudo() == null) {
             connection.createStatement().executeUpdate(
@@ -136,26 +137,21 @@ public class UserController {
                 "SELECT * FROM User WHERE pseudo = '" + pseudo + "'"
         );
 
+        System.out.println("pseudo " + pseudo);
+
         if (rs.next()) {
 
-            if (rs.getString("validatorPseudo") == null) {
-                return new User(
-                        rs.getInt("id"),
-                        rs.getString("pseudo"),
-                        rs.getString("firstname"),
-                        rs.getString("lastname"),
-                        User.Role.valueOf(rs.getString("role"))
-                );
-            } else {
-                return new User(
-                        rs.getInt("id"),
-                        rs.getString("pseudo"),
-                        rs.getString("firstname"),
-                        rs.getString("lastname"),
-                        User.Role.valueOf(rs.getString("role")),
-                        rs.getString("validatorPseudo")
-                );
-            }
+            System.out.println("User found.");
+
+            return new User(
+                    rs.getInt("id"),
+                    rs.getString("pseudo"),
+                    rs.getString("firstname"),
+                    rs.getString("lastname"),
+                    User.Role.valueOf(rs.getString("role")),
+                    rs.getString("validatorPseudo")
+            );
+
         }
         System.out.println("User not found.");
         return null;
@@ -170,7 +166,7 @@ public class UserController {
         ArrayList<User> users = new ArrayList<>();
 
         while (rs.next()) {
-            if (rs.getInt("validatorId") == 0) {
+            if (rs.getString("validatorPseudo") == null) {
                 users.add(new User(
                         rs.getInt("id"),
                         rs.getString("pseudo"),

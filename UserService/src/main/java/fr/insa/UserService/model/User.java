@@ -1,6 +1,7 @@
 package fr.insa.UserService.model;
 
 import com.fasterxml.jackson.annotation.JsonCreator;
+import com.fasterxml.jackson.annotation.JsonProperty;
 
 public class User {
 
@@ -19,7 +20,6 @@ public class User {
     private String validatorPseudo;
     // private Float score;
 
-    @JsonCreator
     public User(int id, String pseudo,String firstname, String lastname, Role role) {
         this.id = id;
         this.pseudo = pseudo;
@@ -29,13 +29,25 @@ public class User {
     }
 
     @JsonCreator
-    public User(int id, String pseudo,String firstname, String lastname, Role role, String validatorPseudo) {
+    public User(@JsonProperty("id") int id,
+                @JsonProperty("pseudo") String pseudo,
+                @JsonProperty("firstname") String firstname,
+                @JsonProperty("lastname") String lastname,
+                @JsonProperty("role") Role role,
+                @JsonProperty("validatorPseudo") String validatorPseudo) {
         this.id = id;
         this.pseudo = pseudo;
         this.firstname = firstname;
         this.lastname = lastname;
         this.role = role;
         this.validatorPseudo = validatorPseudo;
+    }
+
+    public User(String pseudo,String firstname, String lastname, Role role) {
+        this.pseudo = pseudo;
+        this.firstname = firstname;
+        this.lastname = lastname;
+        this.role = role;
     }
 
     public int getId() {
